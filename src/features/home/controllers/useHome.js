@@ -1,18 +1,9 @@
-/**
- * SoftBiblio · src/features/home/controllers/useHome.js
- * Controlador del panel principal (src/app/home/index.html).
- * Mantiene el catálogo, los préstamos y las notificaciones en memoria
- * (prototipo sin backend) y expone el buscador y las acciones de
- * reserva/devolución descritas en los módulos del negocio.
- */
-
 import { Session } from '../../../lib/session.js';
 import { getCurrentUser, logout } from '../../auth/controllers/useAuth.js';
 
 const AUTH_URL = '../auth/index.html';
 const FINE_PER_DAY = 0.5; // dólares por día de retraso
 
-/* ---- Utilidades de fecha ----------------------------------------------- */
 
 function addDays(baseDate, days) {
   const date = new Date(baseDate);
@@ -28,8 +19,6 @@ function daysLate(dueDate) {
   const diffMs = Date.now() - dueDate.getTime();
   return Math.max(0, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
 }
-
-/* ---- Datos de referencia (catálogo simulado) --------------------------- */
 
 const today = new Date();
 
@@ -55,8 +44,6 @@ let notifications = [
   { id: 'n3', text: 'Recuerda que "Sapiens" vence pronto. Planifica tu devolución.', urgent: false },
 ];
 
-/* ---- Selección de elementos del DOM ------------------------------------ */
-
 function collectElements() {
   return {
     userLabel: document.getElementById('userLabel'),
@@ -71,8 +58,6 @@ function collectElements() {
     statNotices: document.getElementById('statNotices'),
   };
 }
-
-/* ---- Plantillas ---------------------------------------------------------*/
 
 const STAMP_LABELS = { disponible: 'Disponible', prestado: 'Prestado', reservado: 'Reservado' };
 
@@ -126,8 +111,6 @@ function noticeItemHTML(notice) {
     </li>`;
 }
 
-/* ---- Renderizado --------------------------------------------------------*/
-
 function renderBooks(els, query) {
   const term = (query || '').trim().toLowerCase();
   const filtered = books.filter((book) => {
@@ -180,8 +163,6 @@ function renderAll(els, query) {
   renderStats(els);
 }
 
-/* ---- Acciones ------------------------------------------------------------*/
-
 function reserveBook(els, bookId) {
   const book = books.find((b) => b.id === bookId);
   if (!book || book.status !== 'disponible') return;
@@ -212,8 +193,6 @@ function returnLoan(els, loanId) {
   }
   renderAll(els, els.searchInput.value);
 }
-
-/* ---- Cableado de eventos ---------------------------------------------- */
 
 function wireSearch(els) {
   els.searchInput.addEventListener('input', (event) => {
@@ -252,8 +231,6 @@ function greetUser(els, user) {
   const headline = document.getElementById('greeting');
   if (headline) headline.textContent = `Hola, ${name}`;
 }
-
-/* ---- Inicialización ------------------------------------------------------*/
 
 function init() {
   const user = getCurrentUser();

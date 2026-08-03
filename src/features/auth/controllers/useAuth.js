@@ -1,21 +1,12 @@
-/**
- * SoftBiblio · src/features/auth/controllers/useAuth.js
- * Controlador de la vista de acceso (src/app/auth/index.html).
- * Prototipo sin backend: valida contra una credencial fija y abre sesión
- * en sessionStorage a través de src/lib/session.js.
- */
-
 import { Session } from '../../../lib/session.js';
 
 const HOME_URL = '../home/index.html';
 
-/** Credencial de acceso habilitada para este prototipo. */
 const VALID_CREDENTIALS = {
   email: 'alessless674@gmail.com',
   password: 'clave123',
 };
 
-/* ---- Reglas de negocio ------------------------------------------------ */
 
 function normalizeEmail(value) {
   return String(value || '').trim().toLowerCase();
@@ -45,8 +36,6 @@ export function logout() {
 export function getCurrentUser() {
   return Session.get();
 }
-
-/* ---- Conexión con el DOM ---------------------------------------------- */
 
 function redirectToHome() {
   window.location.href = HOME_URL;
@@ -128,8 +117,6 @@ function wireSubmit(els) {
     }
 
     setLoading(els, true);
-
-    // Pequeña espera simulada para reflejar una verificación real.
     window.setTimeout(() => {
       const result = login(email, password);
       if (!result.ok) {
@@ -146,7 +133,6 @@ function wireSubmit(els) {
 }
 
 function init() {
-  // Si ya existe una sesión activa, no mostrar el formulario de acceso.
   if (getCurrentUser()) {
     redirectToHome();
     return;
