@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SoftBiblio · Componente: Campo de entrada</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../styles/globals.css">
+<style>
+  .showcase { padding: var(--space-7) 0; max-width: 460px; }
+  .showcase h1 { font-size: var(--text-3xl); margin-bottom: var(--space-2); }
+  .showcase p.text-muted { margin-bottom: var(--space-6); max-width: 60ch; }
+  .swatch-group { margin-bottom: var(--space-6); }
+  .swatch-group h2 { font-size: var(--text-lg); margin-bottom: var(--space-3); }
+  .icon { width: 16px; height: 16px; }
+</style>
+</head>
+<body>
+  <div class="container showcase">
+    <p class="eyebrow">Componente UI · src/components/ui/input.html</p>
+    <h1>Campo de entrada</h1>
+    <p class="text-muted">
+      Ficha de referencia del componente <code class="font-mono">.field</code> /
+      <code class="font-mono">.input</code>, usado en el formulario de acceso y en el
+      buscador del catálogo.
+    </p>
+
+    <section class="swatch-group">
+      <h2>Texto simple</h2>
+      <div class="field">
+        <label class="field-label" for="demoName">Nombre completo</label>
+        <div class="field-wrap">
+          <input class="input" type="text" id="demoName" placeholder="Ej. Elian Peña">
+        </div>
+      </div>
+    </section>
+
+    <section class="swatch-group">
+      <h2>Correo institucional</h2>
+      <div class="field">
+        <label class="field-label" for="demoEmail">Correo</label>
+        <div class="field-wrap">
+          <span class="field-icon" aria-hidden="true">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18v12H3z"/><path d="m3 7 9 6 9-6"/></svg>
+          </span>
+          <input class="input has-icon-left" type="email" id="demoEmail" placeholder="usuario@correo.com">
+        </div>
+        <span class="field-hint">Usa el correo con el que te registraste en la biblioteca.</span>
+      </div>
+    </section>
+
+    <section class="swatch-group">
+      <h2>Contraseña con visibilidad</h2>
+      <div class="field">
+        <label class="field-label" for="demoPass">Contraseña</label>
+        <div class="field-wrap">
+          <input class="input has-icon-right" type="password" id="demoPass" placeholder="••••••••">
+          <button class="field-action" type="button" aria-label="Mostrar contraseña" id="demoToggle">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section class="swatch-group">
+      <h2>Estado de error</h2>
+      <div class="field is-error">
+        <label class="field-label" for="demoErr">Correo</label>
+        <div class="field-wrap">
+          <input class="input" type="email" id="demoErr" value="correo-incorrecto">
+        </div>
+        <span class="field-error">Revisa el correo o la contraseña ingresados.</span>
+      </div>
+    </section>
+
+    <section class="swatch-group">
+      <h2>Buscador de catálogo</h2>
+      <div class="field-wrap">
+        <span class="field-icon" aria-hidden="true">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        </span>
+        <input class="input has-icon-left" type="search" placeholder="Buscar por título, autor o código…">
+      </div>
+    </section>
+  </div>
+
+  <script>
+    document.getElementById('demoToggle').addEventListener('click', function () {
+      var input = document.getElementById('demoPass');
+      input.type = input.type === 'password' ? 'text' : 'password';
+    });
+  </script>
+</body>
+</html>

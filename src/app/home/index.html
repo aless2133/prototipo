@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SoftBiblio · Panel del lector</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../styles/globals.css">
+<style>
+  .home-header { padding-block: var(--space-6) var(--space-5); }
+  .home-header__row { display: flex; justify-content: space-between; align-items: flex-end; gap: var(--space-4); flex-wrap: wrap; }
+  .home-header h1 { font-size: var(--text-2xl); margin-top: var(--space-1); }
+  .section { padding-block: var(--space-5); }
+  .section__head { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-4); gap: var(--space-3); flex-wrap: wrap; }
+  .section__head h2 { font-size: var(--text-xl); }
+  .search-wrap { max-width: 340px; width: 100%; }
+  .layout-two-col { display: grid; grid-template-columns: 1.6fr 1fr; gap: var(--space-5); align-items: start; }
+  @media (max-width: 900px) { .layout-two-col { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+  <header class="navbar">
+    <div class="container navbar__inner">
+      <div class="navbar__brand">
+        <span class="navbar__brand-mark" aria-hidden="true">SB</span>
+        SoftBiblio
+      </div>
+      <div class="cluster gap-4">
+        <span class="navbar__user" id="userLabel">—</span>
+        <button class="btn btn-ghost btn-sm" id="logoutBtn" style="color: var(--paper-50);">Cerrar sesión</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="container home-header">
+    <div class="home-header__row">
+      <div>
+        <p class="eyebrow">Panel del lector</p>
+        <h1 id="greeting">Hola</h1>
+      </div>
+    </div>
+  </div>
+
+  <section class="container">
+    <div class="grid-stats">
+      <div class="card stat-card">
+        <span class="stat-card__value" id="statAvailable">0</span>
+        <span class="stat-card__label">Libros disponibles</span>
+      </div>
+      <div class="card stat-card">
+        <span class="stat-card__value" id="statLoans">0</span>
+        <span class="stat-card__label">Préstamos activos</span>
+      </div>
+      <div class="card stat-card">
+        <span class="stat-card__value" id="statFines">$0.00</span>
+        <span class="stat-card__label">Multas pendientes</span>
+      </div>
+      <div class="card stat-card">
+        <span class="stat-card__value" id="statNotices">0</span>
+        <span class="stat-card__label">Notificaciones</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="container section">
+    <div class="section__head">
+      <h2>Catálogo</h2>
+      <div class="field-wrap search-wrap">
+        <span class="field-icon" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        </span>
+        <input class="input has-icon-left" type="search" id="searchInput" placeholder="Buscar por título, autor o código…">
+      </div>
+    </div>
+    <div class="grid-books" id="booksGrid"></div>
+  </section>
+
+  <section class="container section layout-two-col">
+    <div>
+      <div class="section__head"><h2>Mis préstamos</h2></div>
+      <div class="card" id="loansList"></div>
+    </div>
+    <div>
+      <div class="section__head"><h2>Notificaciones</h2></div>
+      <ul class="card" id="noticeList" style="padding: var(--space-4);"></ul>
+    </div>
+  </section>
+
+  <script type="module" src="../../features/home/controllers/useHome.js"></script>
+</body>
+</html>

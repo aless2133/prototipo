@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SoftBiblio · Componente: Tarjetas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../styles/globals.css">
+<style>
+  .showcase { padding: var(--space-7) 0; }
+  .showcase h1 { font-size: var(--text-3xl); margin-bottom: var(--space-2); }
+  .showcase p.text-muted { margin-bottom: var(--space-6); max-width: 60ch; }
+  .swatch-group { margin-bottom: var(--space-7); }
+  .swatch-group h2 { font-size: var(--text-lg); margin-bottom: var(--space-1); }
+  .swatch-group .desc { margin-bottom: var(--space-4); }
+  .demo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: var(--space-4); }
+</style>
+</head>
+<body>
+  <div class="container showcase">
+    <p class="eyebrow">Componente UI · src/components/ui/cards.html</p>
+    <h1>Tarjetas</h1>
+    <p class="text-muted">
+      Ficha de referencia de las tarjetas del catálogo. El sello de estado rotado
+      (<code class="font-mono">.stamp-badge</code>) es el elemento distintivo del sistema:
+      imita un sello de tinta de vencimiento sobre una ficha de biblioteca.
+    </p>
+
+    <section class="swatch-group">
+      <h2>Ficha de libro</h2>
+      <p class="desc text-muted">Esquina cortada como una ficha física de catálogo.</p>
+      <div class="demo-grid">
+        <article class="card book-card">
+          <div class="book-card__top">
+            <span class="book-card__call">823.9 GAB</span>
+            <span class="stamp-badge stamp-disponible">Disponible</span>
+          </div>
+          <h3 class="book-card__title">Cien Años de Soledad</h3>
+          <p class="book-card__author">Gabriel García Márquez</p>
+          <div class="book-card__meta"><span>Editorial Sudamericana</span><span>1967</span></div>
+          <div class="book-card__foot">
+            <button class="btn btn-brass btn-sm">Reservar</button>
+          </div>
+        </article>
+
+        <article class="card book-card">
+          <div class="book-card__top">
+            <span class="book-card__call">005.1 ROB</span>
+            <span class="stamp-badge stamp-prestado">Prestado</span>
+          </div>
+          <h3 class="book-card__title">Clean Code</h3>
+          <p class="book-card__author">Robert C. Martin</p>
+          <div class="book-card__meta"><span>Prentice Hall</span><span>2008</span></div>
+          <div class="book-card__foot">
+            <button class="btn btn-outline btn-sm" disabled>No disponible</button>
+          </div>
+        </article>
+
+        <article class="card book-card">
+          <div class="book-card__top">
+            <span class="book-card__call">861.44 NER</span>
+            <span class="stamp-badge stamp-reservado">Reservado</span>
+          </div>
+          <h3 class="book-card__title">Veinte Poemas de Amor</h3>
+          <p class="book-card__author">Pablo Neruda</p>
+          <div class="book-card__meta"><span>Losada</span><span>1924</span></div>
+          <div class="book-card__foot">
+            <button class="btn btn-ghost btn-sm">Cancelar reserva</button>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="swatch-group">
+      <h2>Ficha de préstamo</h2>
+      <p class="desc text-muted">Usada en la sección "Mis préstamos" del panel principal.</p>
+      <div class="card" style="max-width: 520px;">
+        <div class="loan-card">
+          <div>
+            <p style="font-weight:600;">Clean Code</p>
+            <p class="text-muted" style="font-size:var(--text-sm);">Robert C. Martin</p>
+          </div>
+          <div class="stack" style="align-items:flex-end; gap:2px;">
+            <span class="loan-card__due is-late">Venció 12/07/2026</span>
+            <span class="stamp-badge stamp-vencido">Vencido</span>
+          </div>
+        </div>
+        <div class="loan-card">
+          <div>
+            <p style="font-weight:600;">Sapiens</p>
+            <p class="text-muted" style="font-size:var(--text-sm);">Yuval Noah Harari</p>
+          </div>
+          <div class="stack" style="align-items:flex-end; gap:2px;">
+            <span class="loan-card__due">Vence 20/08/2026</span>
+            <span class="stamp-badge stamp-prestado">Prestado</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="swatch-group">
+      <h2>Tarjeta de estadística</h2>
+      <div class="demo-grid">
+        <div class="card stat-card">
+          <span class="stat-card__value">128</span>
+          <span class="stat-card__label">Libros disponibles</span>
+        </div>
+        <div class="card stat-card">
+          <span class="stat-card__value">3</span>
+          <span class="stat-card__label">Préstamos activos</span>
+        </div>
+        <div class="card stat-card">
+          <span class="stat-card__value">$1.50</span>
+          <span class="stat-card__label">Multas pendientes</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="swatch-group">
+      <h2>Estado vacío</h2>
+      <div class="card empty-state" style="max-width: 420px;">
+        <p class="empty-state__title">Sin resultados</p>
+        <p>No encontramos libros que coincidan con tu búsqueda. Prueba con otro título o autor.</p>
+      </div>
+    </section>
+  </div>
+</body>
+</html>
