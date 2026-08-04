@@ -1,0 +1,1171 @@
+PROTOTIPO WEB (HTML + CSS + JAVASCRIPT):
+
+src/index.html:
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="refresh" content="0; url=src/app/auth/index.html">
+  <title>SoftBiblio</title>
+</head>
+<body>
+  <p>SoftBiblio…
+    Si no ocurre, <a href="src/app/auth/index.html">haz clic aquí</a>.</p>
+</body>
+</html>
+
+
+ahora app/auth/index.html:
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SoftBiblio · Iniciar sesión</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../styles/globals.css">
+</head>
+<body>
+  <main class="auth-shell">
+    <section class="auth-card">
+      <p class="eyebrow auth-card__eyebrow">SoftBiblio</p>
+      <h1 class="auth-card__title">Bienvenido de nuevo</h1>
+      <p class="auth-card__subtitle">Ingresa con tu cuenta para consultar el catálogo y tus préstamos.</p>
+
+      <div class="auth-alert" id="authAlert" role="alert"></div>
+
+      <form id="authForm" novalidate>
+        <div class="field" id="emailField" style="margin-bottom: var(--space-4);">
+          <label class="field-label" for="email">Correo electrónico</label>
+          <div class="field-wrap">
+            <span class="field-icon" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18v12H3z"/><path d="m3 7 9 6 9-6"/></svg>
+            </span>
+            <input class="input has-icon-left" type="email" id="email" name="email" placeholder="usuario@correo.com" autocomplete="username">
+          </div>
+          <span class="field-error" id="emailError"></span>
+        </div>
+
+        <div class="field" id="passwordField" style="margin-bottom: var(--space-5);">
+          <label class="field-label" for="password">Contraseña</label>
+          <div class="field-wrap">
+            <input class="input has-icon-right" type="password" id="password" name="password" placeholder="••••••••" autocomplete="current-password">
+            <button class="field-action" type="button" id="togglePassword" aria-label="Mostrar contraseña">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+          <span class="field-error" id="passwordError"></span>
+        </div>
+
+        <button class="btn btn-primary btn-block btn-lg" type="submit" id="submitBtn">
+          <span class="btn-spinner" id="submitSpinner" style="display: none;" aria-hidden="true"></span>
+          <span id="submitLabel">Iniciar sesión</span>
+        </button>
+      </form>
+
+      <p class="auth-foot">Acceso exclusivo para usuarios registrados de la biblioteca.</p>
+    </section>
+  </main>
+
+  <script type="module" src="../../features/auth/controllers/useAuth.js"></script>
+</body>
+</html>
+
+
+ahora app/home/index.html:
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SoftBiblio · Panel del lector</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../styles/globals.css">
+<style>
+  .home-header { padding-block: var(--space-6) var(--space-5); }
+  .home-header__row { display: flex; justify-content: space-between; align-items: flex-end; gap: var(--space-4); flex-wrap: wrap; }
+  .home-header h1 { font-size: var(--text-2xl); margin-top: var(--space-1); }
+  .section { padding-block: var(--space-5); }
+  .section__head { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-4); gap: var(--space-3); flex-wrap: wrap; }
+  .section__head h2 { font-size: var(--text-xl); }
+  .search-wrap { max-width: 340px; width: 100%; }
+  .layout-two-col { display: grid; grid-template-columns: 1.6fr 1fr; gap: var(--space-5); align-items: start; }
+  @media (max-width: 900px) { .layout-two-col { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+  <header class="navbar">
+    <div class="container navbar__inner">
+      <div class="navbar__brand">
+        <span class="navbar__brand-mark" aria-hidden="true">SB</span>
+        SoftBiblio
+      </div>
+      <div class="cluster gap-4">
+        <span class="navbar__user" id="userLabel">—</span>
+        <button class="btn btn-ghost btn-sm" id="logoutBtn" style="color: var(--paper-50);">Cerrar sesión</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="container home-header">
+    <div class="home-header__row">
+      <div>
+        <p class="eyebrow">Panel del lector</p>
+        <h1 id="greeting">Hola</h1>
+      </div>
+    </div>
+  </div>
+
+  <section class="container">
+    <div class="grid-stats">
+      <div class="card stat-card">
+        <span class="stat-card__value" id="statAvailable">0</span>
+        <span class="stat-card__label">Libros disponibles.</span>
+      </div>
+      <div class="card stat-card">
+        <span class="stat-card__value" id="statLoans">0</span>
+        <span class="stat-card__label">Préstamos activos.</span>
+      </div>
+      <div class="card stat-card">
+        <span class="stat-card__value" id="statFines">$0.00</span>
+        <span class="stat-card__label">Multas pendientes.</span>
+      </div>
+      <div class="card stat-card">
+        <span class="stat-card__value" id="statNotices">0</span>
+        <span class="stat-card__label">Notificaciones.</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="container section">
+    <div class="section__head">
+      <h2>Catálogo</h2>
+      <div class="field-wrap search-wrap">
+        <span class="field-icon" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        </span>
+        <input class="input has-icon-left" type="search" id="searchInput" placeholder="Buscar por título, autor o código…">
+      </div>
+    </div>
+    <div class="grid-books" id="booksGrid"></div>
+  </section>
+
+  <section class="container section layout-two-col">
+    <div>
+      <div class="section__head"><h2>Mis préstamos</h2></div>
+      <div class="card" id="loansList"></div>
+    </div>
+    <div>
+      <div class="section__head"><h2>Notificaciones</h2></div>
+      <ul class="card" id="noticeList" style="padding: var(--space-4);"></ul>
+    </div>
+  </section>
+
+  <script type="module" src="../../features/home/controllers/useHome.js"></script>
+</body>
+</html>
+
+
+ahora src/components/ui/cards.html:
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SoftBiblio · Componente: Tarjetas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../styles/globals.css">
+<style>
+  .showcase { padding: var(--space-7) 0; }
+  .showcase h1 { font-size: var(--text-3xl); margin-bottom: var(--space-2); }
+  .showcase p.text-muted { margin-bottom: var(--space-6); max-width: 60ch; }
+  .swatch-group { margin-bottom: var(--space-7); }
+  .swatch-group h2 { font-size: var(--text-lg); margin-bottom: var(--space-1); }
+  .swatch-group .desc { margin-bottom: var(--space-4); }
+  .demo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: var(--space-4); }
+</style>
+</head>
+<body>
+  <div class="container showcase">
+    <p class="eyebrow">Componente UI · src/components/ui/cards.html</p>
+    <h1>Tarjetas</h1>
+    <p class="text-muted">
+      Ficha de referencia de las tarjetas del catálogo. El sello de estado rotado
+      (<code class="font-mono">.stamp-badge</code>) es el elemento distintivo del sistema:
+      imita un sello de tinta de vencimiento sobre una ficha de biblioteca.
+    </p>
+
+    <section class="swatch-group">
+      <h2>Ficha de libro</h2>
+      <p class="desc text-muted">Esquina cortada como una ficha física de catálogo.</p>
+      <div class="demo-grid">
+        <article class="card book-card">
+          <div class="book-card__top">
+            <span class="book-card__call">823.9 GAB</span>
+            <span class="stamp-badge stamp-disponible">Disponible</span>
+          </div>
+          <h3 class="book-card__title">Cien Años de Soledad</h3>
+          <p class="book-card__author">Gabriel García Márquez</p>
+          <div class="book-card__meta"><span>Editorial Sudamericana</span><span>1967</span></div>
+          <div class="book-card__foot">
+            <button class="btn btn-brass btn-sm">Reservar</button>
+          </div>
+        </article>
+
+        <article class="card book-card">
+          <div class="book-card__top">
+            <span class="book-card__call">005.1 ROB</span>
+            <span class="stamp-badge stamp-prestado">Prestado</span>
+          </div>
+          <h3 class="book-card__title">Clean Code</h3>
+          <p class="book-card__author">Robert C. Martin</p>
+          <div class="book-card__meta"><span>Prentice Hall</span><span>2008</span></div>
+          <div class="book-card__foot">
+            <button class="btn btn-outline btn-sm" disabled>No disponible</button>
+          </div>
+        </article>
+
+        <article class="card book-card">
+          <div class="book-card__top">
+            <span class="book-card__call">861.44 NER</span>
+            <span class="stamp-badge stamp-reservado">Reservado</span>
+          </div>
+          <h3 class="book-card__title">Veinte Poemas de Amor</h3>
+          <p class="book-card__author">Pablo Neruda</p>
+          <div class="book-card__meta"><span>Losada</span><span>1924</span></div>
+          <div class="book-card__foot">
+            <button class="btn btn-ghost btn-sm">Cancelar reserva</button>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="swatch-group">
+      <h2>Ficha de préstamo</h2>
+      <p class="desc text-muted">Usada en la sección "Mis préstamos" del panel principal.</p>
+      <div class="card" style="max-width: 520px;">
+        <div class="loan-card">
+          <div>
+            <p style="font-weight:600;">Clean Code</p>
+            <p class="text-muted" style="font-size:var(--text-sm);">Robert C. Martin</p>
+          </div>
+          <div class="stack" style="align-items:flex-end; gap:2px;">
+            <span class="loan-card__due is-late">Venció 12/07/2026</span>
+            <span class="stamp-badge stamp-vencido">Vencido</span>
+          </div>
+        </div>
+        <div class="loan-card">
+          <div>
+            <p style="font-weight:600;">Sapiens</p>
+            <p class="text-muted" style="font-size:var(--text-sm);">Yuval Noah Harari</p>
+          </div>
+          <div class="stack" style="align-items:flex-end; gap:2px;">
+            <span class="loan-card__due">Vence 20/08/2026</span>
+            <span class="stamp-badge stamp-prestado">Prestado</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="swatch-group">
+      <h2>Tarjeta de estadística</h2>
+      <div class="demo-grid">
+        <div class="card stat-card">
+          <span class="stat-card__value">128</span>
+          <span class="stat-card__label">Libros disponibles</span>
+        </div>
+        <div class="card stat-card">
+          <span class="stat-card__value">3</span>
+          <span class="stat-card__label">Préstamos activos</span>
+        </div>
+        <div class="card stat-card">
+          <span class="stat-card__value">$1.50</span>
+          <span class="stat-card__label">Multas pendientes</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="swatch-group">
+      <h2>Estado vacío</h2>
+      <div class="card empty-state" style="max-width: 420px;">
+        <p class="empty-state__title">Sin resultados</p>
+        <p>No encontramos libros que coincidan con tu búsqueda. Prueba con otro título o autor.</p>
+      </div>
+    </section>
+  </div>
+</body>
+</html>
+
+
+button.html:
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SoftBiblio · Componente: Botón</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../styles/globals.css">
+<style>
+  .showcase { padding: var(--space-7) 0; }
+  .showcase h1 { font-size: var(--text-3xl); margin-bottom: var(--space-2); }
+  .showcase p.text-muted { margin-bottom: var(--space-6); max-width: 60ch; }
+  .swatch-group { margin-bottom: var(--space-7); }
+  .swatch-group h2 { font-size: var(--text-lg); margin-bottom: var(--space-1); }
+  .swatch-group .desc { margin-bottom: var(--space-4); }
+  .row { display: flex; flex-wrap: wrap; align-items: center; }
+</style>
+</head>
+<body>
+  <div class="container showcase">
+    <p class="eyebrow">Componente UI · src/components/ui/button.html</p>
+    <h1>Botón</h1>
+    <p class="text-muted">
+      Ficha de referencia del componente <code class="font-mono">.btn</code>. Estas variantes
+      son las clases que <strong>auth/index.html</strong> y <strong>home/index.html</strong>
+      consumen directamente desde <code class="font-mono">globals.css</code>.
+    </p>
+
+    <section class="swatch-group">
+      <h2>Variantes</h2>
+      <p class="desc text-muted">Una acción primaria por vista como máximo.</p>
+      <div class="row gap-3">
+        <button class="btn btn-primary">Iniciar sesión</button>
+        <button class="btn btn-brass">Reservar libro</button>
+        <button class="btn btn-outline">Ver detalle</button>
+        <button class="btn btn-ghost">Cancelar</button>
+        <button class="btn btn-danger">Eliminar reserva</button>
+      </div>
+    </section>
+
+    <section class="swatch-group">
+      <h2>Tamaños</h2>
+      <div class="row gap-3">
+        <button class="btn btn-primary btn-sm">Pequeño</button>
+        <button class="btn btn-primary">Normal</button>
+        <button class="btn btn-primary btn-lg">Grande</button>
+      </div>
+    </section>
+
+    <section class="swatch-group">
+      <h2>Estados</h2>
+      <div class="row gap-3">
+        <button class="btn btn-primary" disabled>Deshabilitado</button>
+        <button class="btn btn-primary" id="btnLoading">
+          <span class="btn-spinner" aria-hidden="true"></span> Verificando…
+        </button>
+      </div>
+    </section>
+
+    <section class="swatch-group">
+      <h2>Ancho completo</h2>
+      <p class="desc text-muted">Usado en formularios de auth (<code class="font-mono">.btn-block</code>).</p>
+      <div style="max-width: 320px;">
+        <button class="btn btn-primary btn-block">Entrar a SoftBiblio</button>
+      </div>
+    </section>
+  </div>
+</body>
+</html>
+
+
+input.html:
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SoftBiblio · Componente: Campo de entrada</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../styles/globals.css">
+<style>
+  .showcase { padding: var(--space-7) 0; max-width: 460px; }
+  .showcase h1 { font-size: var(--text-3xl); margin-bottom: var(--space-2); }
+  .showcase p.text-muted { margin-bottom: var(--space-6); max-width: 60ch; }
+  .swatch-group { margin-bottom: var(--space-6); }
+  .swatch-group h2 { font-size: var(--text-lg); margin-bottom: var(--space-3); }
+  .icon { width: 16px; height: 16px; }
+</style>
+</head>
+<body>
+  <div class="container showcase">
+    <p class="eyebrow">Componente UI · src/components/ui/input.html</p>
+    <h1>Campo de entrada</h1>
+    <p class="text-muted">
+      Ficha de referencia del componente <code class="font-mono">.field</code> /
+      <code class="font-mono">.input</code>, usado en el formulario de acceso y en el
+      buscador del catálogo.
+    </p>
+
+    <section class="swatch-group">
+      <h2>Texto simple</h2>
+      <div class="field">
+        <label class="field-label" for="demoName">Nombre completo</label>
+        <div class="field-wrap">
+          <input class="input" type="text" id="demoName" placeholder="Ej. Elian Peña">
+        </div>
+      </div>
+    </section>
+
+    <section class="swatch-group">
+      <h2>Correo institucional</h2>
+      <div class="field">
+        <label class="field-label" for="demoEmail">Correo</label>
+        <div class="field-wrap">
+          <span class="field-icon" aria-hidden="true">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18v12H3z"/><path d="m3 7 9 6 9-6"/></svg>
+          </span>
+          <input class="input has-icon-left" type="email" id="demoEmail" placeholder="usuario@correo.com">
+        </div>
+        <span class="field-hint">Usa el correo con el que te registraste en la biblioteca.</span>
+      </div>
+    </section>
+
+    <section class="swatch-group">
+      <h2>Contraseña con visibilidad</h2>
+      <div class="field">
+        <label class="field-label" for="demoPass">Contraseña</label>
+        <div class="field-wrap">
+          <input class="input has-icon-right" type="password" id="demoPass" placeholder="••••••••">
+          <button class="field-action" type="button" aria-label="Mostrar contraseña" id="demoToggle">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section class="swatch-group">
+      <h2>Estado de error</h2>
+      <div class="field is-error">
+        <label class="field-label" for="demoErr">Correo</label>
+        <div class="field-wrap">
+          <input class="input" type="email" id="demoErr" value="correo-incorrecto">
+        </div>
+        <span class="field-error">Revisa el correo o la contraseña ingresados.</span>
+      </div>
+    </section>
+
+    <section class="swatch-group">
+      <h2>Buscador de catálogo</h2>
+      <div class="field-wrap">
+        <span class="field-icon" aria-hidden="true">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        </span>
+        <input class="input has-icon-left" type="search" placeholder="Buscar por título, autor o código…">
+      </div>
+    </section>
+  </div>
+
+  <script>
+    document.getElementById('demoToggle').addEventListener('click', function () {
+      var input = document.getElementById('demoPass');
+      input.type = input.type === 'password' ? 'text' : 'password';
+    });
+  </script>
+</body>
+</html>
+
+src/features/auth/controllers/useAuth.js:
+
+/* SoftBiblio · Auth */
+import { Session } from '../../../lib/session.js';
+import { DB } from '../../../lib/db.js';
+
+const HOME_URL = '../home/index.html';
+const MAIL_SUFFIX = '@tecnologicoloja.edu.ec';
+const MIN_PASSWORD_LENGTH = 6;
+
+function normalizeEmail(value) {
+  return String(value || '').trim().toLowerCase();
+}
+
+export function validateCredentials(email, password) {
+  const mail = normalizeEmail(email);
+  if (!mail.endsWith(MAIL_SUFFIX) || !mail.split('@')[0]) {
+    return { ok: false, message: 'Debes usar un correo Institucional.' };
+  }
+  if (String(password || '').length <= MIN_PASSWORD_LENGTH) {
+    return { ok: false, message: 'La contraseña debe tener más de 6 caracteres.' };
+  }
+  return { ok: true };
+}
+
+export function login(email, password) {
+  const check = validateCredentials(email, password);
+  if (!check.ok) return check;
+  const { user, isNew } = DB.users.upsert(normalizeEmail(email));
+  if (isNew && DB.users.count() === 1) DB.seedDemoFor(user.email);
+  Session.set({ email: user.email, loginAt: Date.now() });
+  return { ok: true };
+}
+
+export function logout() { Session.clear(); }
+export function getCurrentUser() { return Session.get(); }
+
+function redirectToHome() { window.location.href = HOME_URL; }
+
+function setLoading(els, isLoading) {
+  els.submitBtn.disabled = isLoading;
+  els.spinner.style.display = isLoading ? 'inline-block' : 'none';
+  els.submitLabel.textContent = isLoading ? 'Verificando…' : 'Iniciar sesión';
+}
+
+function showFieldError(field, message) {
+  field.wrapper.classList.add('is-error');
+  field.errorEl.textContent = message;
+}
+
+function clearFieldError(field) { field.wrapper.classList.remove('is-error'); }
+function showFormAlert(alertEl, message) { alertEl.textContent = message; alertEl.classList.add('is-visible'); }
+function hideFormAlert(alertEl) { alertEl.classList.remove('is-visible'); }
+
+function collectElements() {
+  return {
+    form: document.getElementById('authForm'),
+    alert: document.getElementById('authAlert'),
+    submitBtn: document.getElementById('submitBtn'),
+    submitLabel: document.getElementById('submitLabel'),
+    spinner: document.getElementById('submitSpinner'),
+    togglePassword: document.getElementById('togglePassword'),
+    emailField: {
+      input: document.getElementById('email'),
+      wrapper: document.getElementById('emailField'),
+      errorEl: document.getElementById('emailError'),
+    },
+    passwordField: {
+      input: document.getElementById('password'),
+      wrapper: document.getElementById('passwordField'),
+      errorEl: document.getElementById('passwordError'),
+    },
+  };
+}
+
+function wireVisibilityToggle(els) {
+  els.togglePassword.addEventListener('click', () => {
+    const input = els.passwordField.input;
+    input.type = input.type === 'password' ? 'text' : 'password';
+    els.togglePassword.setAttribute('aria-label',
+      input.type === 'password' ? 'Mostrar contraseña' : 'Ocultar contraseña');
+  });
+}
+
+function wireSubmit(els) {
+  els.form.addEventListener('submit', (event) => {
+    event.preventDefault();
+    hideFormAlert(els.alert);
+    clearFieldError(els.emailField);
+    clearFieldError(els.passwordField);
+
+    const email = els.emailField.input.value;
+    const password = els.passwordField.input.value;
+
+    if (!email) { showFieldError(els.emailField, 'Ingresa tu correo.'); return; }
+    if (!normalizeEmail(email).endsWith(MAIL_SUFFIX)) {
+      showFieldError(els.emailField, 'Debe usar un correo Institucional (ej.: alextorres@tecnologicoloja.edu.ec).');
+      return;
+    }
+    if (!password) { showFieldError(els.passwordField, 'Ingresa tu contraseña.'); return; }
+    if (password.length <= MIN_PASSWORD_LENGTH) {
+      showFieldError(els.passwordField, 'Debe tener más de 6 caracteres.');
+      return;
+    }
+
+    setLoading(els, true);
+    window.setTimeout(() => {
+      const result = login(email, password);
+      if (!result.ok) {
+        setLoading(els, false);
+        showFormAlert(els.alert, result.message);
+        return;
+      }
+      redirectToHome();
+    }, 450);
+  });
+}
+
+function init() {
+  const els = collectElements();
+  if (!els.form) return;
+  if (getCurrentUser()) { redirectToHome(); return; }
+  wireVisibilityToggle(els);
+  wireSubmit(els);
+}
+
+document.addEventListener('DOMContentLoaded', init);
+
+src/features/home/controllers/useHome.js:
+
+/* SoftBiblio · Home */
+import { DB, daysLate, fineFor, LOAN_DAYS } from '../../../lib/db.js';
+import {
+  bookCardHTML, loanCardHTML, noticeItemHTML, emptyBooksHTML, emptyLoansHTML,
+} from './renderers.js';
+import { getCurrentUser, logout } from '../../auth/controllers/useAuth.js';
+
+const AUTH_URL = '../auth/index.html';
+
+function collectElements() {
+  return {
+    userLabel: document.getElementById('userLabel'),
+    logoutBtn: document.getElementById('logoutBtn'),
+    searchInput: document.getElementById('searchInput'),
+    booksGrid: document.getElementById('booksGrid'),
+    loansList: document.getElementById('loansList'),
+    noticeList: document.getElementById('noticeList'),
+    statAvailable: document.getElementById('statAvailable'),
+    statLoans: document.getElementById('statLoans'),
+    statFines: document.getElementById('statFines'),
+    statNotices: document.getElementById('statNotices'),
+  };
+}
+
+function renderBooks(els, email, query) {
+  const term = (query || '').trim().toLowerCase();
+  const filtered = DB.books.list().filter((b) => !term
+    || b.title.toLowerCase().includes(term)
+    || b.author.toLowerCase().includes(term)
+    || b.call.toLowerCase().includes(term));
+  els.booksGrid.innerHTML = filtered.length
+    ? filtered.map((b) => bookCardHTML(b, email)).join('')
+    : emptyBooksHTML(term);
+}
+
+function renderLoans(els, email) {
+  const loans = DB.loans.listBy(email);
+  els.loansList.innerHTML = loans.length ? loans.map(loanCardHTML).join('') : emptyLoansHTML();
+}
+
+function renderNotices(els, email) {
+  const notices = DB.notices.listBy(email);
+  els.noticeList.innerHTML = notices.length
+    ? notices.map(noticeItemHTML).join('')
+    : '<li class="notice-item"><span>No tienes notificaciones nuevas.</span></li>';
+}
+
+function renderStats(els, email) {
+  const available = DB.books.list().filter((b) => b.status === 'disponible').length;
+  const loans = DB.loans.listBy(email);
+  const fines = loans.reduce((sum, loan) => sum + fineFor(loan), 0);
+  els.statAvailable.textContent = String(available);
+  els.statLoans.textContent = String(loans.length);
+  els.statFines.textContent = `$${fines.toFixed(2)}`;
+  els.statNotices.textContent = String(DB.notices.listBy(email).length);
+}
+
+function renderAll(els, email, query) {
+  renderBooks(els, email, query);
+  renderLoans(els, email);
+  renderNotices(els, email);
+  renderStats(els, email);
+}
+
+function reserveBook(els, email, bookId) {
+  const book = DB.books.find(bookId);
+  if (!book || book.status !== 'disponible') return;
+  DB.books.set(bookId, { status: 'reservado', heldBy: email });
+  DB.notices.add(email, `Reservaste "${book.title}". Retíralo antes de 48 horas.`);
+  renderAll(els, email, els.searchInput.value);
+}
+
+function cancelReservation(els, email, bookId) {
+  const book = DB.books.find(bookId);
+  if (!book || book.status !== 'reservado' || book.heldBy !== email) return;
+  DB.books.set(bookId, { status: 'disponible', heldBy: null });
+  renderAll(els, email, els.searchInput.value);
+}
+
+function checkoutBook(els, email, bookId) {
+  const book = DB.books.find(bookId);
+  if (!book || book.status !== 'reservado' || book.heldBy !== email) return;
+  DB.loans.create(email, book);
+  DB.books.set(bookId, { status: 'prestado', heldBy: email });
+  DB.notices.add(email, `Retiraste "${book.title}". Plazo de devolución: ${LOAN_DAYS} días.`);
+  renderAll(els, email, els.searchInput.value);
+}
+
+function returnLoan(els, email, loanId) {
+  const loan = DB.loans.find(loanId);
+  if (!loan || loan.email !== email) return;
+  const late = daysLate(loan.due);
+  const fine = fineFor(loan);
+  DB.books.set(loan.bookId, { status: 'disponible', heldBy: null });
+  DB.loans.remove(loanId);
+  DB.notices.add(email, late > 0
+    ? `Devolviste "${loan.title}" con ${late} día(s) de retraso. Multa generada: $${fine.toFixed(2)}.`
+    : `Devolviste "${loan.title}" a tiempo. ¡Gracias!`, late > 0);
+  renderAll(els, email, els.searchInput.value);
+}
+
+function wireSearch(els, email) {
+  els.searchInput.addEventListener('input', (e) => renderBooks(els, email, e.target.value));
+}
+
+function wireCatalogActions(els, email) {
+  els.booksGrid.addEventListener('click', (event) => {
+    const target = event.target.closest('[data-action]');
+    if (!target) return;
+    const { action, bookId } = target.dataset;
+    if (action === 'reserve') reserveBook(els, email, bookId);
+    if (action === 'cancel') cancelReservation(els, email, bookId);
+    if (action === 'checkout') checkoutBook(els, email, bookId);
+  });
+}
+
+function wireLoanActions(els, email) {
+  els.loansList.addEventListener('click', (event) => {
+    const target = event.target.closest('[data-action="return"]');
+    if (!target) return;
+    returnLoan(els, email, target.dataset.loanId);
+  });
+}
+
+function wireLogout(els) {
+  els.logoutBtn.addEventListener('click', () => {
+    logout();
+    window.location.href = AUTH_URL;
+  });
+}
+
+function greetUser(els, user) {
+  const name = user.email.split('@')[0].replace(/[._]/g, ' ');
+  els.userLabel.textContent = user.email;
+  const headline = document.getElementById('greeting');
+  if (headline) headline.textContent = `Hola, ${name}`;
+}
+
+function init() {
+  const user = getCurrentUser();
+  if (!user) { window.location.href = AUTH_URL; return; }
+  const email = user.email;
+  const els = collectElements();
+  greetUser(els, user);
+  wireSearch(els, email);
+  wireCatalogActions(els, email);
+  wireLoanActions(els, email);
+  wireLogout(els);
+  renderAll(els, email, '');
+}
+
+document.addEventListener('DOMContentLoaded', init);
+
+y en su misma ruta: renderers.js:
+
+/* SoftBiblio · Renderizadores */
+import { daysLate } from '../../../lib/db.js';
+
+const STAMP_LABELS = { disponible: 'Disponible', prestado: 'Prestado', reservado: 'Reservado' };
+
+function formatDate(isoDate) {
+  return new Date(isoDate).toLocaleDateString('es-EC', { day: '2-digit', month: '2-digit', year: 'numeric' });
+}
+
+function bookFootHTML(book, email) {
+  if (book.status === 'disponible') {
+    return `<button class="btn btn-brass btn-sm" data-action="reserve" data-book-id="${book.id}">Reservar</button>`;
+  }
+  if (book.status === 'reservado' && book.heldBy === email) {
+    return `<div class="cluster gap-2">
+      <button class="btn btn-brass btn-sm" data-action="checkout" data-book-id="${book.id}">Retirar</button>
+      <button class="btn btn-ghost btn-sm" data-action="cancel" data-book-id="${book.id}">Cancelar</button>
+    </div>`;
+  }
+  return '<button class="btn btn-outline btn-sm" disabled>No disponible</button>';
+}
+
+export function bookCardHTML(book, email) {
+  return `<article class="card book-card">
+    <div class="book-card__top">
+      <span class="book-card__call">${book.call}</span>
+      <span class="stamp-badge stamp-${book.status}">${STAMP_LABELS[book.status]}</span>
+    </div>
+    <h3 class="book-card__title">${book.title}</h3>
+    <p class="book-card__author">${book.author}</p>
+    <div class="book-card__meta"><span>${book.year}</span></div>
+    <div class="book-card__foot">${bookFootHTML(book, email)}</div>
+  </article>`;
+}
+
+export function loanCardHTML(loan) {
+  const late = daysLate(loan.due);
+  const dueClass = late > 0 ? 'is-late' : '';
+  const dueLabel = late > 0 ? `Venció ${formatDate(loan.due)}` : `Vence ${formatDate(loan.due)}`;
+  const stamp = late > 0 ? 'stamp-vencido' : 'stamp-prestado';
+  const stampLabel = late > 0 ? 'Vencido' : 'Prestado';
+  return `<div class="loan-card">
+    <div>
+      <p style="font-weight:600;">${loan.title}</p>
+      <p class="text-muted" style="font-size: var(--text-sm);">${loan.author}</p>
+    </div>
+    <div class="stack gap-2" style="align-items:flex-end;">
+      <span class="loan-card__due ${dueClass}">${dueLabel}</span>
+      <span class="stamp-badge ${stamp}">${stampLabel}</span>
+      <button class="btn btn-outline btn-sm" data-action="return" data-loan-id="${loan.id}">Devolver</button>
+    </div>
+  </div>`;
+}
+
+export function noticeItemHTML(notice) {
+  return `<li class="notice-item">
+    <span class="notice-dot ${notice.urgent ? 'is-urgent' : ''}"></span>
+    <span>${notice.text}</span>
+  </li>`;
+}
+
+export function emptyBooksHTML(term) {
+  return `<div class="card empty-state" style="grid-column: 1 / -1;">
+    <p class="empty-state__title">Sin resultados</p>
+    <p>No encontramos libros que coincidan con "${term}". Prueba con otro título o autor.</p>
+  </div>`;
+}
+
+export function emptyLoansHTML() {
+  return '<div class="empty-state"><p>No tienes préstamos activos.</p></div>';
+}
+
+y src/lib/db.js:
+
+/* SoftBiblio · Base de datos local*/
+
+const DB_KEY = 'softbiblio:db:v1';
+const DAY_MS = 86400000;
+
+export const LOAN_DAYS = 14;
+export const FINE_PER_DAY = 0.5;
+
+function iso(offsetDays = 0) {
+  return new Date(Date.now() + offsetDays * DAY_MS).toISOString();
+}
+
+export function daysLate(dueISO) {
+  return Math.max(0, Math.ceil((Date.now() - new Date(dueISO).getTime()) / DAY_MS));
+}
+
+export function fineFor(loan) {
+  return daysLate(loan.due) * FINE_PER_DAY;
+}
+
+const SEED_BOOKS = [
+  { id: 'b1', title: 'Cien Años de Soledad', author: 'Gabriel García Márquez', call: '863.44 GAB', year: 1967, status: 'disponible', heldBy: null },
+  { id: 'b2', title: 'Elian Biografía', author: 'Elian A. Peña', call: '0993811125 LOJ', year: 2007, status: 'prestado', heldBy: null },
+  { id: 'b3', title: 'Veinte Poemas de Amor', author: 'Pablo Neruda', call: '861.44 NER', year: 1924, status: 'disponible', heldBy: null },
+  { id: 'b4', title: 'Sapiens', author: 'Yuval Noah Harari', call: '909 HAR', year: 2011, status: 'prestado', heldBy: null },
+  { id: 'b5', title: 'Introducción a Algoritmos', author: 'Thomas H. Cormen', call: '005.1 COR', year: 2009, status: 'disponible', heldBy: null },
+  { id: 'b6', title: 'El Principito', author: 'Antoine de Saint-Exupéry', call: '843.9 SAI', year: 1943, status: 'disponible', heldBy: null },
+  { id: 'b7', title: 'Redes de Computadoras', author: 'Andrew S. Tanenbaum', call: '004.6 TAN', year: 2012, status: 'reservado', heldBy: 'biblioteca' },
+  { id: 'b8', title: 'Diseño de Bases de Datos', author: 'Ramez Elmasri', call: '005.74 ELM', year: 2016, status: 'disponible', heldBy: null },
+];
+
+function defaultState() {
+  return { users: [], books: SEED_BOOKS, loans: [], notices: [] };
+}
+
+function load() {
+  try {
+    const raw = window.localStorage.getItem(DB_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch (_err) { /* */ }
+  return defaultState();
+}
+
+const state = load();
+
+function save() {
+  try { window.localStorage.setItem(DB_KEY, JSON.stringify(state)); } catch (_err) { /* sin persistencia */ }
+}
+
+export const DB = {
+  users: {
+    upsert(email) {
+      let user = state.users.find((u) => u.email === email);
+      const isNew = !user;
+      if (isNew) {
+        user = { email, createdAt: iso(), lastLogin: iso() };
+        state.users.push(user);
+      } else {
+        user.lastLogin = iso();
+      }
+      save();
+      return { user, isNew };
+    },
+    count: () => state.users.length,
+  },
+  books: {
+    list: () => state.books,
+    find: (id) => state.books.find((b) => b.id === id),
+    set(id, patch) {
+      const book = state.books.find((b) => b.id === id);
+      if (book) Object.assign(book, patch);
+      save();
+    },
+  },
+  loans: {
+    listBy: (email) => state.loans.filter((l) => l.email === email),
+    find: (id) => state.loans.find((l) => l.id === id),
+    create(email, book) {
+      const loan = {
+        id: `l${Date.now()}`, email, bookId: book.id,
+        title: book.title, author: book.author, due: iso(LOAN_DAYS),
+      };
+      state.loans.push(loan);
+      save();
+      return loan;
+    },
+    remove(id) {
+      state.loans = state.loans.filter((l) => l.id !== id);
+      save();
+    },
+  },
+  notices: {
+    listBy: (email) => state.notices.filter((n) => n.email === email),
+    add(email, text, urgent = false) {
+      state.notices.unshift({ id: `n${Date.now()}`, email, text, urgent });
+      save();
+    },
+  },
+  seedDemoFor(email) {
+    state.loans.push(
+      { id: 'l1', email, bookId: 'b2', title: 'Clean Code', author: 'Robert C. Martin', due: iso(-5) },
+      { id: 'l2', email, bookId: 'b4', title: 'Sapiens', author: 'Yuval Noah Harari', due: iso(9) },
+    );
+    const b2 = state.books.find((b) => b.id === 'b2');
+    const b4 = state.books.find((b) => b.id === 'b4');
+    if (b2) b2.heldBy = email;
+    if (b4) b4.heldBy = email;
+    state.notices.push(
+      { id: 'n1', email, urgent: true, text: 'Tu préstamo de "Clean Code" está vencido desde hace varios días.' },
+      { id: 'n2', email, urgent: false, text: 'Nuevo ejemplar disponible: "Diseño de Bases de Datos".' },
+      { id: 'n3', email, urgent: false, text: 'Recuerda que "Sapiens" vence pronto. Planifica tu devolución.' },
+    );
+    save();
+  },
+};
+
+y src/lib/session.js:
+
+const SESSION_KEY = 'softbiblio:session';
+let memoryFallback = null;
+
+function isStorageAvailable() {
+  try {
+    const testKey = '__softbiblio_test__';
+    window.sessionStorage.setItem(testKey, '1');
+    window.sessionStorage.removeItem(testKey);
+    return true;
+  } catch (_err) {
+    return false;
+  }
+}
+
+const storageOk = isStorageAvailable();
+
+export const Session = {
+  set(data) {
+    const payload = JSON.stringify(data);
+    if (storageOk) {
+      window.sessionStorage.setItem(SESSION_KEY, payload);
+    }
+    memoryFallback = payload;
+  },
+
+  get() {
+    const raw = storageOk ? window.sessionStorage.getItem(SESSION_KEY) : memoryFallback;
+    if (!raw) return null;
+    try {
+      return JSON.parse(raw);
+    } catch (_err) {
+      return null;
+    }
+  },
+  clear() {
+    if (storageOk) {
+      window.sessionStorage.removeItem(SESSION_KEY);
+    }
+    memoryFallback = null;
+  },
+};
+
+src/styles/globals.css:
+
+:root {
+
+  --ink-900: #1c2b3a;
+  --ink-700: #2c4256;
+  --paper-50: #f7f4ec;
+  --paper-100: #efeae0;
+  --paper-200: #e2dac9;
+  --brass-500: #a9793f;
+  --brass-600: #8f6432;
+  --moss-600: #3f6652;
+  --moss-100: #e2ebe4;
+  --stamp-600: #a23b2e;
+  --stamp-100: #f3e2dd;
+  --slate-500: #5b6b73;
+  --slate-300: #a9b6bb;
+  --font-display: "Fraunces", "Iowan Old Style", serif;
+  --font-body: "Source Sans 3", "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", "Courier New", monospace;
+  --text-xs: 0.75rem; --text-sm: 0.875rem; --text-base: 1rem;
+  --text-lg: 1.125rem; --text-xl: 1.375rem; --text-2xl: 1.75rem; --text-3xl: 2.5rem;
+  --space-1: 0.25rem; --space-2: 0.5rem; --space-3: 0.75rem; --space-4: 1rem;
+  --space-5: 1.5rem; --space-6: 2rem; --space-7: 3rem;
+  --radius-sm: 6px; --radius-md: 10px; --radius-lg: 18px;
+  --shadow-card: 0 1px 2px rgba(28, 43, 58, 0.06), 0 6px 16px rgba(28, 43, 58, 0.08);
+  --shadow-raised: 0 10px 30px rgba(28, 43, 58, 0.16);
+  --border-hairline: 1px solid var(--paper-200);
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--paper-100); color: var(--ink-900);
+  font-family: var(--font-body); font-size: var(--text-base); line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+img { max-width: 100%; display: block; }
+button { font-family: inherit; }
+a { color: inherit; }
+ul { list-style: none; margin: 0; padding: 0; }
+:focus-visible { outline: 2px solid var(--brass-500); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+}
+h1, h2, h3, .font-display { font-family: var(--font-display); font-weight: 600; letter-spacing: -0.01em; margin: 0; }
+.eyebrow { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: 0.14em; text-transform: uppercase; color: var(--brass-600); }
+.text-muted { color: var(--slate-500); }
+.font-mono { font-family: var(--font-mono); }
+.container { width: 100%; max-width: 1180px; margin-inline: auto; padding-inline: var(--space-5); }
+.stack { display: flex; flex-direction: column; }
+.cluster { display: flex; align-items: center; }
+.gap-2 { gap: var(--space-2); } .gap-3 { gap: var(--space-3); } .gap-4 { gap: var(--space-4); } .gap-5 { gap: var(--space-5); }
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2);
+  font-family: var(--font-body); font-weight: 600; font-size: var(--text-sm); line-height: 1;
+  padding: 0.75rem 1.25rem; border-radius: var(--radius-sm); border: 1px solid transparent;
+  cursor: pointer; transition: transform 0.12s ease, background-color 0.15s ease, box-shadow 0.15s ease;
+  white-space: nowrap;
+}
+.btn:active { transform: translateY(1px); }
+.btn:disabled { cursor: not-allowed; opacity: 0.55; transform: none; }
+.btn-primary { background: var(--ink-900); color: var(--paper-50); }
+.btn-primary:hover:not(:disabled) { background: var(--ink-700); }
+.btn-brass { background: var(--brass-500); color: var(--paper-50); }
+.btn-brass:hover:not(:disabled) { background: var(--brass-600); }
+.btn-outline { background: transparent; color: var(--ink-900); border-color: var(--slate-300); }
+.btn-outline:hover:not(:disabled) { border-color: var(--ink-900); background: var(--paper-50); }
+.btn-ghost { background: transparent; color: var(--slate-500); }
+.btn-ghost:hover:not(:disabled) { color: var(--ink-900); background: var(--paper-200); }
+.btn-danger { background: var(--stamp-600); color: var(--paper-50); }
+.btn-danger:hover:not(:disabled) { background: #892f24; }
+.btn-sm { padding: 0.5rem 0.9rem; font-size: var(--text-xs); }
+.btn-lg { padding: 0.95rem 1.6rem; font-size: var(--text-base); }
+.btn-block { width: 100%; }
+.btn-spinner {
+  width: 14px; height: 14px; border: 2px solid rgba(247, 244, 236, 0.4);
+  border-top-color: currentColor; border-radius: 50%; animation: spin 0.7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.field { display: flex; flex-direction: column; gap: var(--space-2); }
+.field-label { font-size: var(--text-sm); font-weight: 600; color: var(--ink-900); }
+.field-wrap { position: relative; display: flex; align-items: center; }
+.field-icon { position: absolute; left: 0.9rem; color: var(--slate-500); pointer-events: none; display: flex; }
+.input {
+  width: 100%; font-family: var(--font-body); font-size: var(--text-sm); color: var(--ink-900);
+  background: var(--paper-50); border: 1px solid var(--slate-300); border-radius: var(--radius-sm);
+  padding: 0.75rem 1rem; transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.input::placeholder { color: var(--slate-300); }
+.input:focus { outline: none; border-color: var(--brass-500); box-shadow: 0 0 0 3px rgba(169, 121, 63, 0.18); }
+.field-wrap .input.has-icon-left { padding-left: 2.6rem; }
+.field-wrap .input.has-icon-right { padding-right: 2.6rem; }
+.field-action { position: absolute; right: 0.6rem; background: none; border: none; color: var(--slate-500); cursor: pointer; padding: 0.35rem; display: flex; border-radius: 4px; }
+.field-action:hover { color: var(--ink-900); }
+.field-hint { font-size: var(--text-xs); color: var(--slate-500); }
+.field.is-error .input { border-color: var(--stamp-600); background: var(--stamp-100); }
+.field-error { font-size: var(--text-xs); color: var(--stamp-600); font-weight: 600; display: none; }
+.field.is-error .field-error { display: block; }
+.stamp-badge {
+  --stamp-color: var(--moss-600);
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: var(--font-mono); font-size: 0.62rem; font-weight: 700; letter-spacing: 0.06em;
+  text-transform: uppercase; color: var(--stamp-color); border: 2px solid var(--stamp-color);
+  border-radius: 999px; padding: 0.45rem 0.7rem; transform: rotate(-6deg); position: relative; line-height: 1;
+}
+.stamp-badge::before {
+  content: ""; position: absolute; inset: 3px; border: 1px solid var(--stamp-color); border-radius: 999px; opacity: 0.55;
+}
+.stamp-disponible { --stamp-color: var(--moss-600); }
+.stamp-prestado { --stamp-color: var(--slate-500); }
+.stamp-reservado { --stamp-color: var(--brass-600); }
+.stamp-vencido { --stamp-color: var(--stamp-600); }
+.card { background: var(--paper-50); border-radius: var(--radius-md); box-shadow: var(--shadow-card); border: var(--border-hairline); }
+.book-card {
+  position: relative; padding: var(--space-4); display: flex; flex-direction: column; gap: var(--space-3);
+  clip-path: polygon(0 0, calc(100% - 18px) 0, 100% 18px, 100% 100%, 0 100%);
+}
+.book-card::after {
+  content: ""; position: absolute; top: 0; right: 0; width: 18px; height: 18px;
+  background: var(--paper-200); clip-path: polygon(0 0, 100% 0, 100% 100%);
+}
+.book-card__top { display: flex; justify-content: space-between; align-items: flex-start; gap: var(--space-3); }
+.book-card__call { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--brass-600); letter-spacing: 0.03em; }
+.book-card__title { font-family: var(--font-display); font-size: var(--text-lg); font-weight: 600; }
+.book-card__author { font-size: var(--text-sm); color: var(--slate-500); }
+.book-card__meta { display: flex; gap: var(--space-3); font-size: var(--text-xs); color: var(--slate-500); }
+.book-card__foot { display: flex; justify-content: space-between; align-items: center; margin-top: auto; padding-top: var(--space-2); }
+.loan-card { display: flex; justify-content: space-between; align-items: center; gap: var(--space-4); padding: var(--space-4); border-bottom: var(--border-hairline); }
+.loan-card:last-child { border-bottom: none; }
+.loan-card__due { font-family: var(--font-mono); font-size: var(--text-sm); }
+.loan-card__due.is-late { color: var(--stamp-600); font-weight: 700; }
+.stat-card { padding: var(--space-4) var(--space-5); display: flex; flex-direction: column; gap: var(--space-1); border-left: 3px solid var(--brass-500); }
+.stat-card__value { font-family: var(--font-display); font-size: var(--text-2xl); }
+.stat-card__label { font-size: var(--text-xs); color: var(--slate-500); text-transform: uppercase; letter-spacing: 0.08em; }
+.notice-item { display: flex; gap: var(--space-3); padding: var(--space-3) 0; border-bottom: var(--border-hairline); }
+.notice-item:last-child { border-bottom: none; }
+.notice-dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 6px; flex-shrink: 0; background: var(--brass-500); }
+.notice-dot.is-urgent { background: var(--stamp-600); }
+.empty-state { text-align: center; padding: var(--space-7) var(--space-4); color: var(--slate-500); }
+.empty-state__title { font-family: var(--font-display); color: var(--ink-900); font-size: var(--text-lg); margin-bottom: var(--space-2); }
+.navbar { background: var(--ink-900); color: var(--paper-50); }
+.navbar__inner { display: flex; align-items: center; justify-content: space-between; padding-block: var(--space-3); }
+.navbar__brand { display: flex; align-items: center; gap: var(--space-2); font-family: var(--font-display); font-size: var(--text-lg); }
+.navbar__brand-mark { width: 32px; height: 32px; border: 2px solid var(--brass-500); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: var(--text-xs); color: var(--brass-500); }
+.navbar__user { font-size: var(--text-sm); color: var(--slate-300); }
+.auth-shell {
+  min-height: 100vh; display: flex; align-items: center; justify-content: center; background: var(--ink-900);
+  background-image: radial-gradient(circle at 12% 18%, rgba(169, 121, 63, 0.18), transparent 40%),
+    radial-gradient(circle at 88% 82%, rgba(63, 102, 82, 0.16), transparent 45%);
+  padding: var(--space-5);
+}
+.auth-card {
+  width: 100%; max-width: 420px; background: var(--paper-50); border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-raised); padding: var(--space-6) var(--space-6) var(--space-5); position: relative;
+}
+.auth-card::before, .auth-card::after { content: ""; position: absolute; width: 22px; height: 22px; border: 2px solid var(--brass-500); opacity: 0.7; }
+.auth-card::before { top: 12px; left: 12px; border-right: none; border-bottom: none; }
+.auth-card::after { bottom: 12px; right: 12px; border-left: none; border-top: none; }
+.auth-card__eyebrow { text-align: center; margin-bottom: var(--space-2); }
+.auth-card__title { font-size: var(--text-2xl); text-align: center; margin-bottom: var(--space-1); }
+.auth-card__subtitle { text-align: center; color: var(--slate-500); font-size: var(--text-sm); margin-bottom: var(--space-6); }
+.auth-alert { display: none; align-items: flex-start; gap: var(--space-2); background: var(--stamp-100); color: var(--stamp-600); font-size: var(--text-sm); font-weight: 600; padding: var(--space-3); border-radius: var(--radius-sm); margin-bottom: var(--space-4); }
+.auth-alert.is-visible { display: flex; }
+.auth-foot { text-align: center; margin-top: var(--space-5); font-size: var(--text-xs); color: var(--slate-500); }
+.grid-books { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: var(--space-4); }
+.grid-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-4); }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+@media (max-width: 860px) {
+  .grid-stats { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 560px) {
+  .grid-stats { grid-template-columns: 1fr; }
+  .container { padding-inline: var(--space-4); }
+  .auth-card { padding: var(--space-5) var(--space-4); }
+}

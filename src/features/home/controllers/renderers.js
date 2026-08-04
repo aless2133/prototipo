@@ -1,4 +1,3 @@
-/* SoftBiblio · Renderizadores */
 import { daysLate } from '../../../lib/db.js';
 
 const STAMP_LABELS = { disponible: 'Disponible', prestado: 'Prestado', reservado: 'Reservado' };

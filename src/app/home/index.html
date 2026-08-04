@@ -3,90 +3,131 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SoftBiblio · Panel del lector</title>
+<title>SoftBiblio · Panel de Gestión</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../../styles/globals.css">
+<link rel="stylesheet" href="../../styles/admin.css">
 <style>
-  .home-header { padding-block: var(--space-6) var(--space-5); }
-  .home-header__row { display: flex; justify-content: space-between; align-items: flex-end; gap: var(--space-4); flex-wrap: wrap; }
-  .home-header h1 { font-size: var(--text-2xl); margin-top: var(--space-1); }
-  .section { padding-block: var(--space-5); }
-  .section__head { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-4); gap: var(--space-3); flex-wrap: wrap; }
-  .section__head h2 { font-size: var(--text-xl); }
-  .search-wrap { max-width: 340px; width: 100%; }
-  .layout-two-col { display: grid; grid-template-columns: 1.6fr 1fr; gap: var(--space-5); align-items: start; }
-  @media (max-width: 900px) { .layout-two-col { grid-template-columns: 1fr; } }
+.home-header { padding-block: var(--space-6) var(--space-5); }
+.home-header__row { display: flex; justify-content: space-between; align-items: flex-end; gap: var(--space-4); flex-wrap: wrap; }
+.home-header h1 { font-size: var(--text-2xl); margin-top: var(--space-1); }
 </style>
 </head>
 <body>
-  <header class="navbar">
-    <div class="container navbar__inner">
-      <div class="navbar__brand">
-        <span class="navbar__brand-mark" aria-hidden="true">SB</span>
-        SoftBiblio
+<header class="navbar">
+  <div class="container navbar__inner">
+    <div class="navbar__brand">
+      <span class="navbar__brand-mark" aria-hidden="true">SB</span>
+      SoftBiblio
+    </div>
+    <div class="cluster gap-4">
+      <span class="navbar__user" id="userLabel">—</span>
+      <button class="btn btn-ghost btn-sm" id="logoutBtn" style="color: var(--paper-50);">Cerrar sesión</button>
+    </div>
+  </div>
+</header>
+
+<div class="container home-header">
+  <div class="home-header__row">
+    <div>
+      <p class="eyebrow">Panel de Gestión</p>
+      <h1 id="greeting">Hola</h1>
+    </div>
+  </div>
+</div>
+
+<section class="container">
+  <div class="grid-stats" id="statsGrid"></div>
+</section>
+
+<section class="container section" style="padding-top: var(--space-4);">
+  <div class="admin-tabs" role="tablist" aria-label="Secciones">
+    <button class="admin-tab is-active" role="tab" id="tab-users" data-tab="users" aria-selected="true">
+      <span class="admin-tab__icon" aria-hidden="true">👤</span> Usuarios
+    </button>
+    <button class="admin-tab" role="tab" id="tab-catalog" data-tab="catalog" aria-selected="false">
+      <span class="admin-tab__icon" aria-hidden="true">📚</span> Catálogo y Operaciones
+    </button>
+  </div>
+
+  <!-- Panel Usuarios -->
+  <div class="admin-panel" id="panel-users" data-panel="users">
+    <div class="layout-two-col">
+      <div>
+        <div class="section__head">
+          <h2>Listado de Usuarios</h2>
+          <div class="field-wrap search-wrap">
+            <span class="field-icon" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+            </span>
+            <input class="input has-icon-left" type="search" id="searchUsers" placeholder="Buscar por nombre, cédula o correo…">
+          </div>
+        </div>
+        <div class="card" style="padding: 0; overflow: hidden;">
+          <div class="table-wrap" id="usersTableWrap"></div>
+        </div>
       </div>
-      <div class="cluster gap-4">
-        <span class="navbar__user" id="userLabel">—</span>
-        <button class="btn btn-ghost btn-sm" id="logoutBtn" style="color: var(--paper-50);">Cerrar sesión</button>
+      <div id="userFormWrapper"></div>
+    </div>
+  </div>
+  <div class="admin-panel is-hidden" id="panel-catalog" data-panel="catalog">
+    <div class="admin-subtabs" role="tablist">
+      <button class="admin-subtab is-active" role="tab" data-subtab="books">Libros</button>
+      <button class="admin-subtab" role="tab" data-subtab="loans">Préstamos</button>
+    </div>
+
+    <div class="admin-subpanel" data-subpanel="books">
+      <div class="layout-two-col">
+        <div>
+          <div class="section__head">
+            <h2>Catálogo de Libros</h2>
+            <div class="field-wrap search-wrap">
+              <span class="field-icon" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+              </span>
+              <input class="input has-icon-left" type="search" id="searchBooks" placeholder="Buscar por título, autor o código…">
+            </div>
+          </div>
+          <div class="card" style="padding: 0; overflow: hidden;">
+            <div class="table-wrap" id="booksTableWrap"></div>
+          </div>
+        </div>
+        <div id="bookFormWrapper"></div>
       </div>
     </div>
-  </header>
 
-  <div class="container home-header">
-    <div class="home-header__row">
-      <div>
-        <p class="eyebrow">Panel del lector</p>
-        <h1 id="greeting">Hola</h1>
+    <div class="admin-subpanel is-hidden" data-subpanel="loans">
+      <div class="layout-two-col">
+        <div>
+          <div class="section__head">
+            <h2>Préstamos</h2>
+            <div class="cluster gap-3">
+              <div class="field-wrap search-wrap">
+                <span class="field-icon" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+                </span>
+                <input class="input has-icon-left" type="search" id="searchLoans" placeholder="Buscar por usuario, libro o código…">
+              </div>
+              <label class="cluster gap-2" style="font-size: var(--text-sm); cursor: pointer;">
+                <input type="checkbox" id="onlyPending" checked> Solo pendientes
+              </label>
+            </div>
+          </div>
+          <div class="card" style="padding: 0; overflow: hidden;">
+            <div class="table-wrap" id="loansTableWrap"></div>
+          </div>
+        </div>
+        <div id="loanFormWrapper"></div>
       </div>
     </div>
   </div>
+</section>
 
-  <section class="container">
-    <div class="grid-stats">
-      <div class="card stat-card">
-        <span class="stat-card__value" id="statAvailable">0</span>
-        <span class="stat-card__label">Libros disponibles.</span>
-      </div>
-      <div class="card stat-card">
-        <span class="stat-card__value" id="statLoans">0</span>
-        <span class="stat-card__label">Préstamos activos.</span>
-      </div>
-      <div class="card stat-card">
-        <span class="stat-card__value" id="statFines">$0.00</span>
-        <span class="stat-card__label">Multas pendientes.</span>
-      </div>
-      <div class="card stat-card">
-        <span class="stat-card__value" id="statNotices">0</span>
-        <span class="stat-card__label">Notificaciones.</span>
-      </div>
-    </div>
-  </section>
+<div class="container" style="padding-block: var(--space-3);">
+  <div class="admin-alert" id="adminAlert" role="alert"></div>
+</div>
 
-  <section class="container section">
-    <div class="section__head">
-      <h2>Catálogo</h2>
-      <div class="field-wrap search-wrap">
-        <span class="field-icon" aria-hidden="true">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
-        </span>
-        <input class="input has-icon-left" type="search" id="searchInput" placeholder="Buscar por título, autor o código…">
-      </div>
-    </div>
-    <div class="grid-books" id="booksGrid"></div>
-  </section>
-
-  <section class="container section layout-two-col">
-    <div>
-      <div class="section__head"><h2>Mis préstamos</h2></div>
-      <div class="card" id="loansList"></div>
-    </div>
-    <div>
-      <div class="section__head"><h2>Notificaciones</h2></div>
-      <ul class="card" id="noticeList" style="padding: var(--space-4);"></ul>
-    </div>
-  </section>
-
-  <script type="module" src="../../features/home/controllers/useHome.js"></script>
+<script type="module" src="../../features/home/controllers/useHome.js"></script>
 </body>
 </html>
