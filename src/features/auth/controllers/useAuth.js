@@ -3,7 +3,7 @@ import { Session } from '../../../lib/session.js';
 import { DB } from '../../../lib/db.js';
 
 const HOME_URL = '../home/index.html';
-const GMAIL_SUFFIX = '@gmail.com';
+const MAIL_SUFFIX = '@tecnologicoloja.edu.ec';
 const MIN_PASSWORD_LENGTH = 6;
 
 function normalizeEmail(value) {
@@ -12,8 +12,8 @@ function normalizeEmail(value) {
 
 export function validateCredentials(email, password) {
   const mail = normalizeEmail(email);
-  if (!mail.endsWith(GMAIL_SUFFIX) || !mail.split('@')[0]) {
-    return { ok: false, message: 'Debes usar un correo que termine en @gmail.com.' };
+  if (!mail.endsWith(MAIL_SUFFIX) || !mail.split('@')[0]) {
+    return { ok: false, message: 'Debes usar un correo Institucional.' };
   }
   if (String(password || '').length <= MIN_PASSWORD_LENGTH) {
     return { ok: false, message: 'La contraseña debe tener más de 6 caracteres.' };
@@ -91,8 +91,8 @@ function wireSubmit(els) {
     const password = els.passwordField.input.value;
 
     if (!email) { showFieldError(els.emailField, 'Ingresa tu correo.'); return; }
-    if (!normalizeEmail(email).endsWith(GMAIL_SUFFIX)) {
-      showFieldError(els.emailField, 'Debe terminar en @gmail.com (ej.: alextorres@gmail.com).');
+    if (!normalizeEmail(email).endsWith(MAIL_SUFFIX)) {
+      showFieldError(els.emailField, 'Debe usar un correo Institucional (ej.: alextorres@tecnologicoloja.edu.ec).');
       return;
     }
     if (!password) { showFieldError(els.passwordField, 'Ingresa tu contraseña.'); return; }
