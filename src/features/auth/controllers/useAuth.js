@@ -1,50 +1,44 @@
+/* SoftBiblio · Auth */
 import { Session } from '../../../lib/session.js';
+import { DB } from '../../../lib/db.js';
 
 const HOME_URL = '../home/index.html';
-
-const VALID_CREDENTIALS = {
-  email: 'alessless674@gmail.com',
-  password: 'clave123',
-};
-
+const GMAIL_SUFFIX = '@gmail.com';
+const MIN_PASSWORD_LENGTH = 6;
 
 function normalizeEmail(value) {
   return String(value || '').trim().toLowerCase();
 }
 
-/** Compara las credenciales ingresadas contra la credencial válida. */
 export function validateCredentials(email, password) {
-  return (
-    normalizeEmail(email) === VALID_CREDENTIALS.email &&
-    String(password || '') === VALID_CREDENTIALS.password
-  );
-}
-
-/** Abre sesión y guarda al usuario actual. */
-export function login(email, password) {
-  if (!validateCredentials(email, password)) {
-    return { ok: false, message: 'Revisa el correo o la contraseña ingresados.' };
+  const mail = normalizeEmail(email);
+  if (!mail.endsWith(GMAIL_SUFFIX) || !mail.split('@')[0]) {
+    return { ok: false, message: 'Debes usar un correo que termine en @gmail.com.' };
   }
-  Session.set({ email: normalizeEmail(email), loginAt: Date.now() });
+  if (String(password || '').length <= MIN_PASSWORD_LENGTH) {
+    return { ok: false, message: 'La contraseña debe tener más de 6 caracteres.' };
+  }
   return { ok: true };
 }
 
-export function logout() {
-  Session.clear();
+export function login(email, password) {
+  const check = validateCredentials(email, password);
+  if (!check.ok) return check;
+  const { user, isNew } = DB.users.upsert(normalizeEmail(email));
+  if (isNew && DB.users.count() === 1) DB.seedDemoFor(user.email);
+  Session.set({ email: user.email, loginAt: Date.now() });
+  return { ok: true };
 }
 
-export function getCurrentUser() {
-  return Session.get();
-}
+export function logout() { Session.clear(); }
+export function getCurrentUser() { return Session.get(); }
 
-function redirectToHome() {
-  window.location.href = HOME_URL;
-}
+function redirectToHome() { window.location.href = HOME_URL; }
 
-function setLoading(elements, isLoading) {
-  elements.submitBtn.disabled = isLoading;
-  elements.spinner.style.display = isLoading ? 'inline-block' : 'none';
-  elements.submitLabel.textContent = isLoading ? 'Verificando…' : 'Iniciar sesión';
+function setLoading(els, isLoading) {
+  els.submitBtn.disabled = isLoading;
+  els.spinner.style.display = isLoading ? 'inline-block' : 'none';
+  els.submitLabel.textContent = isLoading ? 'Verificando…' : 'Iniciar sesión';
 }
 
 function showFieldError(field, message) {
@@ -52,18 +46,9 @@ function showFieldError(field, message) {
   field.errorEl.textContent = message;
 }
 
-function clearFieldError(field) {
-  field.wrapper.classList.remove('is-error');
-}
-
-function showFormAlert(alertEl, message) {
-  alertEl.textContent = message;
-  alertEl.classList.add('is-visible');
-}
-
-function hideFormAlert(alertEl) {
-  alertEl.classList.remove('is-visible');
-}
+function clearFieldError(field) { field.wrapper.classList.remove('is-error'); }
+function showFormAlert(alertEl, message) { alertEl.textContent = message; alertEl.classList.add('is-visible'); }
+function hideFormAlert(alertEl) { alertEl.classList.remove('is-visible'); }
 
 function collectElements() {
   return {
@@ -90,10 +75,8 @@ function wireVisibilityToggle(els) {
   els.togglePassword.addEventListener('click', () => {
     const input = els.passwordField.input;
     input.type = input.type === 'password' ? 'text' : 'password';
-    els.togglePassword.setAttribute(
-      'aria-label',
-      input.type === 'password' ? 'Mostrar contraseña' : 'Ocultar contraseña'
-    );
+    els.togglePassword.setAttribute('aria-label',
+      input.type === 'password' ? 'Mostrar contraseña' : 'Ocultar contraseña');
   });
 }
 
@@ -107,12 +90,14 @@ function wireSubmit(els) {
     const email = els.emailField.input.value;
     const password = els.passwordField.input.value;
 
-    if (!email) {
-      showFieldError(els.emailField, 'Ingresa tu correo institucional.');
+    if (!email) { showFieldError(els.emailField, 'Ingresa tu correo.'); return; }
+    if (!normalizeEmail(email).endsWith(GMAIL_SUFFIX)) {
+      showFieldError(els.emailField, 'Debe terminar en @gmail.com (ej.: alextorres@gmail.com).');
       return;
     }
-    if (!password) {
-      showFieldError(els.passwordField, 'Ingresa tu contraseña.');
+    if (!password) { showFieldError(els.passwordField, 'Ingresa tu contraseña.'); return; }
+    if (password.length <= MIN_PASSWORD_LENGTH) {
+      showFieldError(els.passwordField, 'Debe tener más de 6 caracteres.');
       return;
     }
 
@@ -122,9 +107,6 @@ function wireSubmit(els) {
       if (!result.ok) {
         setLoading(els, false);
         showFormAlert(els.alert, result.message);
-        showFieldError(els.emailField, ' ');
-        showFieldError(els.passwordField, ' ');
-        els.passwordField.errorEl.textContent = result.message;
         return;
       }
       redirectToHome();
@@ -133,11 +115,9 @@ function wireSubmit(els) {
 }
 
 function init() {
-  if (getCurrentUser()) {
-    redirectToHome();
-    return;
-  }
   const els = collectElements();
+  if (!els.form) return;
+  if (getCurrentUser()) { redirectToHome(); return; }
   wireVisibilityToggle(els);
   wireSubmit(els);
 }
